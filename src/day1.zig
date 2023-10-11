@@ -1,7 +1,7 @@
 const std = @import("std");
 const readFile = @import("utils.zig").readFile;
 
-fn parseData(allocator: std.mem.Allocator, data: []const u8) ![]u32 {
+fn parseData(allocator: std.mem.Allocator, data: []const u8) ![]const u32 {
     var tokens = std.mem.tokenizeAny(u8, data, "\n");
 
     var arr = std.ArrayList(u32).init(allocator);
@@ -14,7 +14,7 @@ fn parseData(allocator: std.mem.Allocator, data: []const u8) ![]u32 {
     return arr.toOwnedSlice();
 }
 
-fn countIncreases(numbers: []u32) u32 {
+fn countIncreases(numbers: []const u32) u32 {
     var last_value = numbers[0];
     var count: u32 = 0;
 
@@ -36,7 +36,7 @@ fn sum(numbers: []const u32) u32 {
     return total;
 }
 
-fn countIncreasesWindow(numbers: []u32) u32 {
+fn countIncreasesWindow(numbers: []const u32) u32 {
     var windows = std.mem.window(u32, numbers, 3, 1);
 
     var last_value = sum(windows.next() orelse return 0);
@@ -66,7 +66,7 @@ pub fn solve(allocator: std.mem.Allocator) !void {
     std.log.info("day1 part two: {}", .{two});
 }
 
-test "sample" {
+test "one" {
     const data = try readFile(std.testing.allocator, "day1", "sample");
     defer std.testing.allocator.free(data);
 
@@ -75,6 +75,19 @@ test "sample" {
 
     const expected: u32 = 7;
     const actual = countIncreases(numbers);
+
+    try std.testing.expectEqual(expected, actual);
+}
+
+test "two" {
+    const data = try readFile(std.testing.allocator, "day1", "sample");
+    defer std.testing.allocator.free(data);
+
+    const numbers = try parseData(std.testing.allocator, data);
+    defer std.testing.allocator.free(numbers);
+
+    const expected: u32 = 5;
+    const actual = countIncreasesWindow(numbers);
 
     try std.testing.expectEqual(expected, actual);
 }

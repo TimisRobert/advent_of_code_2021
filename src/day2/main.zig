@@ -1,5 +1,8 @@
 const std = @import("std");
-const readFile = @import("utils.zig").readFile;
+
+const day = "day2";
+const sampleData = @embedFile("./sample");
+const realData = @embedFile("./real");
 
 const Instruction = union(enum) { up: i32, down: i32, forward: i32 };
 
@@ -83,10 +86,7 @@ fn parseData(allocator: std.mem.Allocator, data: []const u8) ![]const Instructio
 }
 
 pub fn solve(allocator: std.mem.Allocator) !void {
-    const file = try readFile(allocator, "day2", "real");
-    defer allocator.free(file);
-
-    const instructions = try parseData(allocator, file);
+    const instructions = try parseData(allocator, realData);
     defer allocator.free(instructions);
 
     var state = State.init();
@@ -99,16 +99,13 @@ pub fn solve(allocator: std.mem.Allocator) !void {
 
     const two = aim_state.x * aim_state.y;
 
-    std.log.info("day2 part one: {}", .{one});
-    std.log.info("day2 part two: {}", .{two});
+    std.log.info(day ++ " part one: {}, part two: {}", .{ one, two });
 }
 
 test "one" {
-    const data = try readFile(std.testing.allocator, "day2", "sample");
-    defer std.testing.allocator.free(data);
-
-    const instructions = try parseData(std.testing.allocator, data);
-    defer std.testing.allocator.free(instructions);
+    const allocator = std.testing.allocator;
+    const instructions = try parseData(allocator, sampleData);
+    defer allocator.free(instructions);
 
     var state = State.init();
     state.executeInstructions(instructions);
@@ -120,11 +117,9 @@ test "one" {
 }
 
 test "two" {
-    const data = try readFile(std.testing.allocator, "day2", "sample");
-    defer std.testing.allocator.free(data);
-
-    const instructions = try parseData(std.testing.allocator, data);
-    defer std.testing.allocator.free(instructions);
+    const allocator = std.testing.allocator;
+    const instructions = try parseData(allocator, sampleData);
+    defer allocator.free(instructions);
 
     var aim_state = AimState.init();
     aim_state.executeInstructions(instructions);

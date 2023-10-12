@@ -1,5 +1,8 @@
 const std = @import("std");
-const readFile = @import("utils.zig").readFile;
+
+const day = "day3";
+const sampleData = @embedFile("./sample");
+const realData = @embedFile("./real");
 
 fn Calculator(comptime container_type: anytype) type {
     return struct {
@@ -128,12 +131,9 @@ fn Calculator(comptime container_type: anytype) type {
 }
 
 pub fn solve(allocator: std.mem.Allocator) !void {
-    const file = try readFile(allocator, "day3", "real");
-    defer allocator.free(file);
-
     const CalculatorImpl = Calculator(u12);
 
-    const bit_sets = try CalculatorImpl.parseData(allocator, file);
+    const bit_sets = try CalculatorImpl.parseData(allocator, realData);
     defer allocator.free(bit_sets);
 
     const gamma_one = CalculatorImpl.calculateGamma(bit_sets);
@@ -146,18 +146,15 @@ pub fn solve(allocator: std.mem.Allocator) !void {
 
     const two = o2 * co2;
 
-    std.log.info("day3 part one: {}", .{one});
-    std.log.info("day3 part two: {}", .{two});
+    std.log.info(day ++ " part one: {}, part two: {}", .{ one, two });
 }
 
 test "one" {
-    const data = try readFile(std.testing.allocator, "day3", "sample");
-    defer std.testing.allocator.free(data);
-
     const CalculatorImpl = Calculator(u5);
 
-    const bit_sets = try CalculatorImpl.parseData(std.testing.allocator, data);
-    defer std.testing.allocator.free(bit_sets);
+    const allocator = std.testing.allocator;
+    const bit_sets = try CalculatorImpl.parseData(allocator, sampleData);
+    defer allocator.free(bit_sets);
 
     const gamma = CalculatorImpl.calculateGamma(bit_sets);
     const epsilon = CalculatorImpl.calculateEpsilon(gamma);
@@ -170,16 +167,14 @@ test "one" {
 }
 
 test "two" {
-    const data = try readFile(std.testing.allocator, "day3", "sample");
-    defer std.testing.allocator.free(data);
-
     const CalculatorImpl = Calculator(u5);
 
-    const bit_sets = try CalculatorImpl.parseData(std.testing.allocator, data);
-    defer std.testing.allocator.free(bit_sets);
+    const allocator = std.testing.allocator;
+    const bit_sets = try CalculatorImpl.parseData(allocator, sampleData);
+    defer allocator.free(bit_sets);
 
-    const o2 = try CalculatorImpl.calculateO2(std.testing.allocator, bit_sets);
-    const co2 = try CalculatorImpl.calculateCo2(std.testing.allocator, bit_sets);
+    const o2 = try CalculatorImpl.calculateO2(allocator, bit_sets);
+    const co2 = try CalculatorImpl.calculateCo2(allocator, bit_sets);
 
     const expected_o2: u5 = 23;
     const expected_co2: u5 = 10;

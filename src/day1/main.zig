@@ -1,5 +1,8 @@
 const std = @import("std");
-const readFile = @import("utils.zig").readFile;
+
+const day = "day1";
+const sampleData = @embedFile("./sample");
+const realData = @embedFile("./real");
 
 fn parseData(allocator: std.mem.Allocator, data: []const u8) ![]const u32 {
     var tokens = std.mem.tokenizeAny(u8, data, "\n");
@@ -53,25 +56,19 @@ fn countIncreasesWindow(numbers: []const u32) u32 {
 }
 
 pub fn solve(allocator: std.mem.Allocator) !void {
-    const file = try readFile(allocator, "day1", "real");
-    defer allocator.free(file);
-
-    const data = try parseData(allocator, file);
+    const data = try parseData(allocator, realData);
     defer allocator.free(data);
 
     const one = countIncreases(data);
     const two = countIncreasesWindow(data);
 
-    std.log.info("day1 part one: {}", .{one});
-    std.log.info("day1 part two: {}", .{two});
+    std.log.info(day ++ " part one: {}, part two: {}", .{ one, two });
 }
 
 test "one" {
-    const data = try readFile(std.testing.allocator, "day1", "sample");
-    defer std.testing.allocator.free(data);
-
-    const numbers = try parseData(std.testing.allocator, data);
-    defer std.testing.allocator.free(numbers);
+    const allocator = std.testing.allocator;
+    const numbers = try parseData(allocator, sampleData);
+    defer allocator.free(numbers);
 
     const expected: u32 = 7;
     const actual = countIncreases(numbers);
@@ -80,11 +77,9 @@ test "one" {
 }
 
 test "two" {
-    const data = try readFile(std.testing.allocator, "day1", "sample");
-    defer std.testing.allocator.free(data);
-
-    const numbers = try parseData(std.testing.allocator, data);
-    defer std.testing.allocator.free(numbers);
+    const allocator = std.testing.allocator;
+    const numbers = try parseData(allocator, sampleData);
+    defer allocator.free(numbers);
 
     const expected: u32 = 5;
     const actual = countIncreasesWindow(numbers);

@@ -25,12 +25,12 @@ const Data = struct {
 
         var min_pos: u32 = std.math.maxInt(u32);
         for (self.positions.items) |position| {
-            if (position < min_pos) min_pos = position;
+            min_pos = @min(min_pos, position);
         }
 
         var max_pos: u32 = std.math.minInt(u32);
         for (self.positions.items) |position| {
-            if (position > max_pos) max_pos = position;
+            max_pos = @max(max_pos, position);
         }
 
         for (min_pos..max_pos) |curr_position| {
@@ -51,12 +51,12 @@ const Data = struct {
 
         var min_pos: u32 = std.math.maxInt(u32);
         for (self.positions.items) |position| {
-            if (position < min_pos) min_pos = position;
+            min_pos = @min(min_pos, position);
         }
 
         var max_pos: u32 = std.math.minInt(u32);
         for (self.positions.items) |position| {
-            if (position > max_pos) max_pos = position;
+            max_pos = @max(max_pos, position);
         }
 
         for (min_pos..max_pos) |curr_position| {
@@ -64,8 +64,7 @@ const Data = struct {
 
             for (self.positions.items) |position| {
                 const steps = @abs(@as(i64, @intCast(curr_position)) - @as(i64, @intCast(position)));
-
-                var total_fuel: u64 = @divExact((steps * (steps + 1)), 2);
+                const total_fuel = @divExact((steps * (steps + 1)), 2);
 
                 fuel += total_fuel;
             }

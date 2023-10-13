@@ -4,15 +4,22 @@ const day = "template";
 const sampleData = @embedFile("./sample");
 const realData = @embedFile("./real");
 
-fn parseData(allocator: std.mem.Allocator, data: []const u8) ![]const u32 {
-    _ = data;
-    _ = allocator;
-    return .{};
-}
+const Data = struct {
+    fn parse(allocator: std.mem.Allocator, data: []const u8) !@This() {
+        _ = data;
+        _ = allocator;
+
+        return .{};
+    }
+
+    fn deinit(self: *@This()) void {
+        _ = self;
+    }
+};
 
 pub fn solve(allocator: std.mem.Allocator) !void {
-    const data = try parseData(allocator, realData);
-    defer allocator.free(data);
+    var data = try Data.parse(allocator, realData);
+    defer data.deinit();
 
     const one = 0;
     const two = 0;
@@ -22,8 +29,9 @@ pub fn solve(allocator: std.mem.Allocator) !void {
 
 test "one" {
     const allocator = std.testing.allocator;
-    const data = try parseData(allocator, sampleData);
-    defer allocator.free(data);
+
+    var data = try Data.parse(allocator, sampleData);
+    defer data.deinit();
 
     const expected: u32 = 0;
     const actual = 0;
@@ -33,8 +41,9 @@ test "one" {
 
 test "two" {
     const allocator = std.testing.allocator;
-    const data = try parseData(allocator, sampleData);
-    defer allocator.free(data);
+
+    var data = try Data.parse(allocator, sampleData);
+    defer data.deinit();
 
     const expected: u32 = 0;
     const actual = 0;
